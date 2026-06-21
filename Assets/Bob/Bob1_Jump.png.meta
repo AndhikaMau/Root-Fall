@@ -1,10 +1,25 @@
 fileFormatVersion: 2
-guid: 265d039a5839842409b272fe72442ddf
+guid: 3bab75cc19cccbe4da710c6366166a77
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -298143801382924231
-    second: Bob1_Walk_0
+      213: -9200946867581284823
+    second: Bob1_Jump_0
+  - first:
+      213: -1591474147399912412
+    second: Bob1_Jump_1
+  - first:
+      213: 3436581047571936728
+    second: Bob1_Jump_2
+  - first:
+      213: -6367426747821047883
+    second: Bob1_Jump_3
+  - first:
+      213: -4583789955690511028
+    second: Bob1_Jump_4
+  - first:
+      213: 5459891464582083083
+    second: Bob1_Jump_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +61,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -113,7 +128,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Bob1_Walk_0
+      name: Bob1_Jump_0
       rect:
         serializedVersion: 2
         x: 4
@@ -128,8 +143,118 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9301692dac7ccdbf0800000000000000
-      internalID: -298143801382924231
+      spriteID: 92e0398929baf4080800000000000000
+      internalID: -9200946867581284823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Bob1_Jump_1
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 6
+        width: 45
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 424b207e1b2f9e9e0800000000000000
+      internalID: -1591474147399912412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Bob1_Jump_2
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 10
+        width: 45
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d57d56414031bf20800000000000000
+      internalID: 3436581047571936728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Bob1_Jump_3
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 10
+        width: 45
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bf3ec2eb1b52a7a0800000000000000
+      internalID: -6367426747821047883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Bob1_Jump_4
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 8
+        width: 47
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c45401e325b1360c0800000000000000
+      internalID: -4583789955690511028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Bob1_Jump_5
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 8
+        width: 44
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b023a9afb5e65cb40800000000000000
+      internalID: 5459891464582083083
       vertices: []
       indices: 
       edges: []
@@ -138,7 +263,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +273,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Bob1_Walk_0: -298143801382924231
+      Bob1_Jump_0: -9200946867581284823
+      Bob1_Jump_1: -1591474147399912412
+      Bob1_Jump_2: 3436581047571936728
+      Bob1_Jump_3: -6367426747821047883
+      Bob1_Jump_4: -4583789955690511028
+      Bob1_Jump_5: 5459891464582083083
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
