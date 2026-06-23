@@ -23,6 +23,9 @@ public class PlayerCarry : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0f)
+        return;
+
         // F = Ambil / Tukar Item
         if (Input.GetKeyDown(KeyCode.F))
         {

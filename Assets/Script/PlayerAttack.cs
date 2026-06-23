@@ -21,6 +21,9 @@ void Start()
 
 void Update()
 {
+    if (Time.timeScale == 0f)
+    return;
+    
     // Jika mati tidak bisa menyerang
     if (health != null && health.IsDead)
         return;

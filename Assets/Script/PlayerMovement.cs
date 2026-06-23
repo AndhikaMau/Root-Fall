@@ -27,7 +27,10 @@ void Start()
 }
 
 void Update()
-{
+{   
+    if (Time.timeScale == 0f)
+    return;
+
     // Jika mati, hentikan semua kontrol
     if (health != null && health.IsDead)
     {
@@ -90,13 +93,26 @@ private System.Collections.IEnumerator Dash()
     float direction =
         facingRight ? 1f : -1f;
 
-    rb.linearVelocity =
-        new Vector2(
-            direction * dashSpeed,
-            0);
+    float currentSpeed = dashSpeed;
 
-    yield return new WaitForSeconds(
-        dashDuration);
+    float elapsed = 0f;
+
+    while (elapsed < dashDuration)
+    {
+        rb.linearVelocity =
+            new Vector2(
+                direction * currentSpeed,
+                rb.linearVelocity.y);
+
+        currentSpeed = Mathf.Lerp(
+            dashSpeed,
+            speed,
+            elapsed / dashDuration);
+
+        elapsed += Time.deltaTime;
+
+        yield return null;
+    }
 
     isDashing = false;
 }
