@@ -17,24 +17,35 @@ public class CameraController : MonoBehaviour
     public float deadZoneX = 0.5f;
     public float deadZoneY = 0.3f;
 
-    [Header("Camera Bounds (opsional)")]
-    public bool useBounds = false;
-    public float minX, maxX, minY, maxY;
+    [Header("Camera Bounds")]
+    public bool useBounds = true;
+    public BoxCollider2D cameraBounds;
 
     [Header("Y Offset")]
     public float yOffset = 1f;
 
-    private Vector3 velocity = Vector3.zero;
-    private float lookAheadVelocity = 0f;
-    private float currentLookAhead = 0f;
+    private float lookAheadVelocity;
+    private float currentLookAhead;
     private float lastTargetX;
+
+    private float velocityX;
+    private float velocityY;
+
     private Rigidbody2D targetRb;
+    private Camera cam;
 
     void Start()
     {
+        cam = Camera.main;
+
         if (target != null)
         {
-            transform.position = new Vector3(target.position.x, target.position.y + yOffset, transform.position.z);
+            transform.position = new Vector3(
+                target.position.x,
+                target.position.y + yOffset,
+                transform.position.z
+            );
+
             lastTargetX = target.position.x;
             targetRb = target.GetComponent<Rigidbody2D>();
         }
@@ -44,48 +55,59 @@ public class CameraController : MonoBehaviour
     {
         if (target == null) return;
 
-        // === LOOK AHEAD ===
         float moveDir = 0f;
+
         if (targetRb != null)
             moveDir = targetRb.linearVelocity.x;
         else
             moveDir = target.position.x - lastTargetX;
 
         float targetLookAhead = Mathf.Sign(moveDir) * lookAheadDistance;
-        if (Mathf.Abs(moveDir) < 0.1f) targetLookAhead = 0f;
 
-        currentLookAhead = Mathf.SmoothDamp(currentLookAhead, targetLookAhead, ref lookAheadVelocity, lookAheadSmoothTime);
+        if (Mathf.Abs(moveDir) < 0.1f)
+            targetLookAhead = 0f;
 
-        // === DEAD ZONE ===
+        currentLookAhead = Mathf.SmoothDamp(
+            currentLookAhead,
+            targetLookAhead,
+            ref lookAheadVelocity,
+            lookAheadSmoothTime
+        );
+
         float targetX = target.position.x + currentLookAhead;
         float targetY = target.position.y + yOffset;
 
         float diffX = targetX - transform.position.x;
         float diffY = targetY - transform.position.y;
 
-        if (Mathf.Abs(diffX) < deadZoneX) targetX = transform.position.x;
-        if (Mathf.Abs(diffY) < deadZoneY) targetY = transform.position.y;
+        if (Mathf.Abs(diffX) < deadZoneX)
+            targetX = transform.position.x;
 
-        // === SMOOTH FOLLOW ===
-        Vector3 desiredPos = new Vector3(targetX, targetY, transform.position.z);
-        transform.position = Vector3.SmoothDamp(transform.position, desiredPos, ref velocity,
-                             new Vector3(smoothTimeX, smoothTimeY, 0).magnitude > 0 ? smoothTimeX : 0.2f);
+        if (Mathf.Abs(diffY) < deadZoneY)
+            targetY = transform.position.y;
 
-        // Smooth Y secara terpisah biar bisa beda nilai
-        float newX = Mathf.SmoothDamp(transform.position.x, targetX, ref velocity.x, smoothTimeX);
-        float newY = Mathf.SmoothDamp(transform.position.y, targetY, ref velocity.y, smoothTimeY);
-        transform.position = new Vector3(newX, newY, transform.position.z);
+        float newX = Mathf.SmoothDamp(transform.position.x, targetX, ref velocityX, smoothTimeX);
+        float newY = Mathf.SmoothDamp(transform.position.y, targetY, ref velocityY, smoothTimeY);
 
-        // === BOUNDS ===
-        if (useBounds)
+        Vector3 newPosition = new Vector3(newX, newY, transform.position.z);
+
+        if (useBounds && cameraBounds != null)
         {
-            float camH = Camera.main.orthographicSize;
-            float camW = camH * Camera.main.aspect;
-            float clampedX = Mathf.Clamp(transform.position.x, minX + camW, maxX - camW);
-            float clampedY = Mathf.Clamp(transform.position.y, minY + camH, maxY - camH);
-            transform.position = new Vector3(clampedX, clampedY, transform.position.z);
+            Bounds bounds = cameraBounds.bounds;
+
+            float camHeight = cam.orthographicSize;
+            float camWidth = camHeight * cam.aspect;
+
+            float minX = bounds.min.x + camWidth;
+            float maxX = bounds.max.x - camWidth;
+            float minY = bounds.min.y + camHeight;
+            float maxY = bounds.max.y - camHeight;
+
+            newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+            newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
         }
 
+        transform.position = newPosition;
         lastTargetX = target.position.x;
     }
 }
