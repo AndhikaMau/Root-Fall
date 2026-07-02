@@ -1,51 +1,62 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class MainMenuManager : MonoBehaviour
 {
+    [Header("UI")]
+    public GameObject mainMenu;
+
+    [Header("Camera")]
     public Camera mainCamera;
-    public Transform focusPoint;
+    public CameraController cameraController;
 
-    public float targetSize = 3f;
-    public float moveDuration = 1.5f;
+    public float startSize = 8f;
+    public float gameSize = 5f;
+    public float zoomDuration = 1.5f;
 
-    public string nextSceneName = "TutorialStage";
+    [Header("Player")]
+    public PlayerMovement playerMovement;
 
-    private bool isStarting = false;
+    void Start()
+    {
+        mainCamera.orthographicSize = startSize;
+
+        playerMovement.canMove = false;
+        playerMovement.SetMenuActive(true);
+
+        cameraController.canFollow = false;
+
+        mainMenu.SetActive(true);
+    }
 
     public void StartGame()
     {
-        if (!isStarting)
-            StartCoroutine(StartGameSequence());
+        StartCoroutine(StartSequence());
     }
 
-    IEnumerator StartGameSequence()
+    IEnumerator StartSequence()
     {
-        isStarting = true;
+    mainMenu.SetActive(false);
 
-        Vector3 startPos = mainCamera.transform.position;
-        Vector3 targetPos = new Vector3(
-            focusPoint.position.x,
-            focusPoint.position.y,
-            mainCamera.transform.position.z
-        );
+    // Kamera langsung mulai mengikuti player
+    cameraController.canFollow = true;
 
-        float startSize = mainCamera.orthographicSize;
-        float timer = 0f;
+    float time = 0f;
 
-        while (timer < moveDuration)
-        {
-            timer += Time.deltaTime;
-            float t = timer / moveDuration;
-            t = Mathf.SmoothStep(0f, 1f, t);
+    while (time < zoomDuration)
+    {
+        mainCamera.orthographicSize =
+            Mathf.Lerp(startSize, gameSize, time / zoomDuration);
 
-            mainCamera.transform.position = Vector3.Lerp(startPos, targetPos, t);
-            mainCamera.orthographicSize = Mathf.Lerp(startSize, targetSize, t);
+        time += Time.deltaTime;
 
-            yield return null;
-        }
+        yield return null;
+    }
 
-        SceneManager.LoadScene(nextSceneName);
+    mainCamera.orthographicSize = gameSize;
+
+    // Setelah zoom selesai baru player bisa bergerak
+    playerMovement.canMove = true;
+    playerMovement.SetMenuActive(false);
     }
 }

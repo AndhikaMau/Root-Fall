@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
+
+    public bool canMove = false;
+    private bool menuActive = false;
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -29,26 +33,65 @@ public class PlayerMovement : MonoBehaviour
         playerAudio = GetComponent<PlayerAudio>();
     }
 
+    public void SetMenuActive(bool active)
+    {
+        menuActive = active;
+    }
+
     void Update()
     {
         if (Time.timeScale == 0f)
             return;
 
-        if (health != null && health.IsDead)
-        {
-            anim.SetFloat("Speed", 0);
-            return;
-        }
+        bool isMainMenuScene = SceneManager.GetActiveScene().name == "MainMenu";
+        bool shouldPauseAnimation = !canMove || isMainMenuScene || menuActive;
 
-        if (isDashing)
-            return;
-
+        // Ground Check tetap berjalan
         isGrounded = Physics2D.OverlapCircle(
             groundCheck.position,
             groundCheckRadius,
             groundLayer);
 
-        // Suara saat baru menyentuh tanah
+        if (health != null && health.IsDead)
+        {
+            if (anim != null)
+            {
+                anim.speed = 0f;
+                anim.SetFloat("Speed", 0);
+            }
+            return;
+        }
+
+        // ===========================
+        // MAIN MENU
+        // ===========================
+        if (shouldPauseAnimation)
+        {
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+
+            if (anim != null)
+            {
+                anim.speed = 0f;
+                anim.SetFloat("Speed", 0);
+                anim.SetBool("IsGrounded", true);
+
+                // Ganti "Idle" jika nama state Idle berbeda
+                anim.Play("idle", 0, 0f);
+            }
+
+            return;
+        }
+
+        if (anim != null)
+            anim.speed = 1f;
+
+        anim.SetBool("IsGrounded", isGrounded);
+
+        if (isDashing)
+            return;
+
+        // Suara saat baru mendarat
         if (!wasGrounded && isGrounded)
         {
             if (playerAudio != null)
@@ -66,11 +109,11 @@ public class PlayerMovement : MonoBehaviour
             move = 1;
 
         rb.linearVelocity =
-            new Vector2(move * speed,
-                        rb.linearVelocity.y);
+            new Vector2(
+                move * speed,
+                rb.linearVelocity.y);
 
         anim.SetFloat("Speed", Mathf.Abs(move));
-        anim.SetBool("IsGrounded", isGrounded);
 
         if (move > 0 && !facingRight)
             Flip();
@@ -81,9 +124,6 @@ public class PlayerMovement : MonoBehaviour
         // Jump
         if (Input.GetKeyDown(KeyCode.W) && isGrounded)
         {
-            if (playerAudio != null)
-                playerAudio.PlayJump();
-
             rb.linearVelocity =
                 new Vector2(
                     rb.linearVelocity.x,
@@ -134,9 +174,7 @@ public class PlayerMovement : MonoBehaviour
         facingRight = !facingRight;
 
         Vector3 scale = transform.localScale;
-
         scale.x *= -1;
-
         transform.localScale = scale;
     }
 

@@ -24,6 +24,9 @@ public class CameraController : MonoBehaviour
     [Header("Y Offset")]
     public float yOffset = 1f;
 
+    [Header("Main Menu")]
+    public bool canFollow = false;
+
     private float lookAheadVelocity;
     private float currentLookAhead;
     private float lastTargetX;
@@ -40,20 +43,19 @@ public class CameraController : MonoBehaviour
 
         if (target != null)
         {
-            transform.position = new Vector3(
-                target.position.x,
-                target.position.y + yOffset,
-                transform.position.z
-            );
-
-            lastTargetX = target.position.x;
             targetRb = target.GetComponent<Rigidbody2D>();
+            lastTargetX = target.position.x;
         }
     }
 
     void LateUpdate()
     {
-        if (target == null) return;
+        // Saat Main Menu kamera tidak mengikuti player
+        if (!canFollow)
+            return;
+
+        if (target == null)
+            return;
 
         float moveDir = 0f;
 
@@ -71,8 +73,7 @@ public class CameraController : MonoBehaviour
             currentLookAhead,
             targetLookAhead,
             ref lookAheadVelocity,
-            lookAheadSmoothTime
-        );
+            lookAheadSmoothTime);
 
         float targetX = target.position.x + currentLookAhead;
         float targetY = target.position.y + yOffset;
@@ -86,10 +87,22 @@ public class CameraController : MonoBehaviour
         if (Mathf.Abs(diffY) < deadZoneY)
             targetY = transform.position.y;
 
-        float newX = Mathf.SmoothDamp(transform.position.x, targetX, ref velocityX, smoothTimeX);
-        float newY = Mathf.SmoothDamp(transform.position.y, targetY, ref velocityY, smoothTimeY);
+        float newX = Mathf.SmoothDamp(
+            transform.position.x,
+            targetX,
+            ref velocityX,
+            smoothTimeX);
 
-        Vector3 newPosition = new Vector3(newX, newY, transform.position.z);
+        float newY = Mathf.SmoothDamp(
+            transform.position.y,
+            targetY,
+            ref velocityY,
+            smoothTimeY);
+
+        Vector3 newPosition = new Vector3(
+            newX,
+            newY,
+            transform.position.z);
 
         if (useBounds && cameraBounds != null)
         {
@@ -108,6 +121,7 @@ public class CameraController : MonoBehaviour
         }
 
         transform.position = newPosition;
+
         lastTargetX = target.position.x;
     }
 }
