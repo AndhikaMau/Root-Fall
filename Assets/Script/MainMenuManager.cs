@@ -17,6 +17,12 @@ public class MainMenuManager : MonoBehaviour
     [Header("Player")]
     public PlayerMovement playerMovement;
 
+    [Header("NPC")]
+    public NPCManager npcManager;
+
+    [Header("Guideline Control")]
+    public ControlGuide controlGuide;
+
     void Start()
     {
         mainCamera.orthographicSize = startSize;
@@ -38,6 +44,10 @@ public class MainMenuManager : MonoBehaviour
     {
     mainMenu.SetActive(false);
 
+    // Munculkan NPC & Tetua di posisi random
+    if (npcManager != null)
+        npcManager.SpawnNPCs();
+
     // Kamera langsung mulai mengikuti player
     cameraController.canFollow = true;
 
@@ -55,7 +65,17 @@ public class MainMenuManager : MonoBehaviour
 
     mainCamera.orthographicSize = gameSize;
 
-    // Setelah zoom selesai baru player bisa bergerak
+    // Setelah kamera fokus ke Asep, tampilkan panduan kontrol.
+    // Player belum bisa bergerak sampai panduan ditutup pemain.
+    if (controlGuide != null)
+    {
+        controlGuide.Show();
+
+        while (controlGuide.IsShowing)
+            yield return null;
+    }
+
+    // Panduan sudah ditutup -> player bisa bergerak
     playerMovement.canMove = true;
     playerMovement.SetMenuActive(false);
     }
