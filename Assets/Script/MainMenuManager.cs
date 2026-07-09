@@ -5,6 +5,7 @@ public class MainMenuManager : MonoBehaviour
 {
     [Header("UI")]
     public GameObject mainMenu;
+    public GameObject gameUI;
 
     [Header("Camera")]
     public Camera mainCamera;
@@ -25,6 +26,9 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
+        if (gameUI == null)
+            gameUI = FindSceneObject("UI");
+
         mainCamera.orthographicSize = startSize;
 
         playerMovement.canMove = false;
@@ -33,6 +37,9 @@ public class MainMenuManager : MonoBehaviour
         cameraController.canFollow = false;
 
         mainMenu.SetActive(true);
+
+        if (gameUI != null)
+            gameUI.SetActive(false);
     }
 
     public void StartGame()
@@ -42,7 +49,13 @@ public class MainMenuManager : MonoBehaviour
 
     IEnumerator StartSequence()
     {
+    if (gameUI == null)
+        gameUI = FindSceneObject("UI");
+
     mainMenu.SetActive(false);
+
+    if (gameUI != null)
+        gameUI.SetActive(true);
 
     // Munculkan NPC & Tetua di posisi random
     if (npcManager != null)
@@ -78,5 +91,18 @@ public class MainMenuManager : MonoBehaviour
     // Panduan sudah ditutup -> player bisa bergerak
     playerMovement.canMove = true;
     playerMovement.SetMenuActive(false);
+    }
+
+    private GameObject FindSceneObject(string objectName)
+    {
+        GameObject[] objects = Resources.FindObjectsOfTypeAll<GameObject>();
+
+        foreach (GameObject obj in objects)
+        {
+            if (obj.name == objectName && obj.scene.IsValid())
+                return obj;
+        }
+
+        return null;
     }
 }

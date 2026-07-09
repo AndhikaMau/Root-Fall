@@ -6,25 +6,37 @@ public class Parallax : MonoBehaviour
 
     [Range(0f, 1f)]
     public float parallaxEffect = 0.5f;
+    public bool affectY;
 
-    private Vector3 lastCameraPosition;
+    private Vector3 startPosition;
+    private Vector3 startCameraPosition;
 
-    void Start()
+    private void Start()
     {
         if (cameraTransform == null)
-            cameraTransform = Camera.main.transform;
+        {
+            Camera mainCamera = Camera.main;
+            if (mainCamera != null)
+                cameraTransform = mainCamera.transform;
+        }
 
-        lastCameraPosition = cameraTransform.position;
+        startPosition = transform.position;
+
+        if (cameraTransform != null)
+            startCameraPosition = cameraTransform.position;
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        Vector3 deltaMovement =
-            cameraTransform.position - lastCameraPosition;
+        if (cameraTransform == null)
+            return;
 
-        transform.position +=
-            new Vector3(deltaMovement.x * parallaxEffect, 0f, 0f);
+        Vector3 cameraDelta = cameraTransform.position - startCameraPosition;
+        float yOffset = affectY ? cameraDelta.y * parallaxEffect : 0f;
 
-        lastCameraPosition = cameraTransform.position;
+        transform.position = new Vector3(
+            startPosition.x + cameraDelta.x * parallaxEffect,
+            startPosition.y + yOffset,
+            startPosition.z);
     }
 }

@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
     private bool wasGrounded;
     private bool isDashing = false;
     private bool facingRight = true;
+    private bool wasMovementLocked;
 
     void Start()
     {
@@ -41,10 +42,15 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         if (Time.timeScale == 0f)
+        {
+            if (playerAudio != null)
+                playerAudio.StopWalk();
+
             return;
+        }
 
         bool isMainMenuScene = SceneManager.GetActiveScene().name == "MainMenu";
-        bool shouldPauseAnimation = !canMove || isMainMenuScene || menuActive;
+        bool shouldLockMovement = !canMove || isMainMenuScene || menuActive;
 
         // Ground Check tetap berjalan
         isGrounded = Physics2D.OverlapCircle(
@@ -54,6 +60,9 @@ public class PlayerMovement : MonoBehaviour
 
         if (health != null && health.IsDead)
         {
+            if (playerAudio != null)
+                playerAudio.StopWalk();
+
             if (anim != null)
             {
                 anim.speed = 0f;
@@ -65,23 +74,30 @@ public class PlayerMovement : MonoBehaviour
         // ===========================
         // MAIN MENU
         // ===========================
-        if (shouldPauseAnimation)
+        if (shouldLockMovement)
         {
             if (rb != null)
                 rb.linearVelocity = Vector2.zero;
 
             if (anim != null)
             {
-                anim.speed = 0f;
+                anim.speed = 1f;
                 anim.SetFloat("Speed", 0);
                 anim.SetBool("IsGrounded", true);
 
-                // Ganti "Idle" jika nama state Idle berbeda
-                anim.Play("idle", 0, 0f);
+                if (!wasMovementLocked)
+                    anim.Play("idle", 0, 0f);
             }
 
+            if (playerAudio != null)
+                playerAudio.StopWalk();
+
+            wasMovementLocked = true;
+            wasGrounded = isGrounded;
             return;
         }
+
+        wasMovementLocked = false;
 
         if (anim != null)
             anim.speed = 1f;
@@ -89,7 +105,12 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("IsGrounded", isGrounded);
 
         if (isDashing)
+        {
+            if (playerAudio != null)
+                playerAudio.StopWalk();
+
             return;
+        }
 
         // Suara saat baru mendarat
         if (!wasGrounded && isGrounded)
@@ -115,6 +136,14 @@ public class PlayerMovement : MonoBehaviour
 
         anim.SetFloat("Speed", Mathf.Abs(move));
 
+        if (playerAudio != null)
+        {
+            if (move != 0 && isGrounded)
+                playerAudio.PlayWalk();
+            else
+                playerAudio.StopWalk();
+        }
+
         if (move > 0 && !facingRight)
             Flip();
 
@@ -124,17 +153,26 @@ public class PlayerMovement : MonoBehaviour
         // Jump
         if (Input.GetKeyDown(KeyCode.W) && isGrounded)
         {
+            if (playerAudio != null)
+                playerAudio.StopWalk();
+
             rb.linearVelocity =
                 new Vector2(
                     rb.linearVelocity.x,
                     jumpForce);
+
+            if (playerAudio != null)
+                playerAudio.PlayJump();
         }
 
         // Dash
         if (Input.GetKeyDown(KeyCode.K))
         {
             if (playerAudio != null)
+            {
+                playerAudio.StopWalk();
                 playerAudio.PlayDash();
+            }
 
             StartCoroutine(Dash());
         }
