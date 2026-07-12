@@ -64,6 +64,13 @@ public class EvolutionAltar : MonoBehaviour
         isProcessing = true;
         ExpProgress.MarkEvolved();
 
+        PlayerEvolutionSkills evolutionSkills = player != null
+            ? player.GetComponent<PlayerEvolutionSkills>()
+            : null;
+
+        if (evolutionSkills != null)
+            evolutionSkills.UnlockEvolution();
+
         if (playerAnimator == null && player != null)
             playerAnimator = player.GetComponent<Animator>();
 

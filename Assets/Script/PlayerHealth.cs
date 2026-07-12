@@ -1,22 +1,28 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 3;
     public float invincibleTime = 1f;
 
+    [Header("Death")]
+    public string deathAnimationName = "playerdeath";
+    public string idleAnimationName = "idle";
+    public float deathAnimationDuration = 1f;
+
     [Header("Checkpoint")]
     public string checkpointLayerName = "Checkpoint";
     public Vector2 checkpointRespawnOffset = new Vector2(0f, 0.35f);
-    public bool respawnAtCheckpointOnDeath = true;
-    public float respawnDelay = 1f;
 
     // UI Hati
     public HealthUI healthUI;
 
     // Panel Game Over
     public GameObject gameOverPanel;
+    public Button gameOverMainButton;
+    public Button gameOverExitButton;
 
     private int currentHealth;
     private Animator anim;
@@ -28,6 +34,9 @@ public class PlayerHealth : MonoBehaviour
     private Vector3 checkpointPosition;
     private bool hasCheckpoint;
     private int checkpointLayer = -1;
+    private Coroutine gameOverRoutine;
+    private PanelButtonNavigator gameOverNavigator;
+    private bool gameOverButtonsBound;
 
     public bool IsDead { get; private set; }
 
@@ -50,6 +59,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (gameOverPanel != null)
         {
+            BindGameOverButtons();
             gameOverPanel.SetActive(false);
         }
     }
@@ -88,6 +98,7 @@ public class PlayerHealth : MonoBehaviour
             return;
 
         currentHealth -= damage;
+        currentHealth = Mathf.Max(0, currentHealth);
 
         if (healthUI != null)
         {
@@ -135,22 +146,20 @@ public class PlayerHealth : MonoBehaviour
         isInvincible = false;
     }
 
-    IEnumerator ShowGameOver()
+    IEnumerator ShowGameOverAfterDeath()
     {
         // tunggu animasi mati selesai
-        yield return new WaitForSecondsRealtime(1.0f);
+        yield return new WaitForSeconds(deathAnimationDuration);
 
         if (gameOverPanel != null)
         {
-            PanelButtonNavigator navigator = gameOverPanel.GetComponent<PanelButtonNavigator>();
-            if (navigator == null)
-                navigator = gameOverPanel.AddComponent<PanelButtonNavigator>();
-
-            navigator.Setup();
+            BindGameOverButtons();
+            SetupGameOverKeyboardNavigation();
             gameOverPanel.SetActive(true);
         }
 
         Time.timeScale = 0f;
+        gameOverRoutine = null;
     }
 
     void Die()
@@ -166,30 +175,46 @@ public class PlayerHealth : MonoBehaviour
             playerAudio.PlayDeath();
         }
 
-        rb.linearVelocity =
-            new Vector2(0f, rb.linearVelocity.y);
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
 
-        anim.SetFloat("Speed", 0);
+        if (anim != null)
+            anim.SetFloat("Speed", 0);
 
         if (healthUI != null)
         {
             healthUI.UpdateHearts(0);
         }
 
-        // Paksa langsung masuk animasi mati
-        anim.Play("playerdeath", 0, 0f);
+        if (anim != null)
+        {
+            anim.speed = 1f;
+            anim.ResetTrigger("Hurt");
 
-        if (respawnAtCheckpointOnDeath && hasCheckpoint)
-            StartCoroutine(RespawnAtCheckpointAfterDelay());
-        else
-            StartCoroutine(ShowGameOver());
+            if (!string.IsNullOrWhiteSpace(deathAnimationName))
+                anim.Play(deathAnimationName, 0, 0f);
+        }
+
+        if (gameOverRoutine != null)
+            StopCoroutine(gameOverRoutine);
+
+        gameOverRoutine = StartCoroutine(ShowGameOverAfterDeath());
 
         Debug.Log("Player Mati");
     }
 
-    private IEnumerator RespawnAtCheckpointAfterDelay()
+    public void RespawnFromGameOver()
     {
-        yield return new WaitForSeconds(respawnDelay);
+        if (!hasCheckpoint)
+            checkpointPosition = transform.position;
+
+        Time.timeScale = 1f;
+
+        if (gameOverRoutine != null)
+        {
+            StopCoroutine(gameOverRoutine);
+            gameOverRoutine = null;
+        }
 
         transform.position = checkpointPosition;
 
@@ -215,9 +240,69 @@ public class PlayerHealth : MonoBehaviour
             anim.ResetTrigger("Hurt");
             anim.SetFloat("Speed", 0f);
             anim.SetBool("IsGrounded", true);
-            anim.Play("idle", 0, 0f);
+
+            if (!string.IsNullOrWhiteSpace(idleAnimationName))
+                anim.Play(idleAnimationName, 0, 0f);
         }
 
         StartCoroutine(Invincibility());
+    }
+
+    public void QuitFromGameOver()
+    {
+        Time.timeScale = 1f;
+        Application.Quit();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
+
+    private void BindGameOverButtons()
+    {
+        if (gameOverPanel == null || gameOverButtonsBound)
+            return;
+
+        Button[] buttons = gameOverPanel.GetComponentsInChildren<Button>(true);
+        foreach (Button button in buttons)
+        {
+            if (button == null)
+                continue;
+
+            string buttonName = button.gameObject.name.ToLowerInvariant();
+
+            if (gameOverMainButton == null && (buttonName.Contains("main") || buttonName.Contains("restart") || buttonName.Contains("respawn")))
+                gameOverMainButton = button;
+            else if (gameOverExitButton == null && (buttonName.Contains("exit") || buttonName.Contains("quit") || buttonName.Contains("keluar")))
+                gameOverExitButton = button;
+        }
+
+        if (gameOverMainButton != null)
+            gameOverMainButton.onClick.AddListener(RespawnFromGameOver);
+
+        if (gameOverExitButton != null)
+            gameOverExitButton.onClick.AddListener(QuitFromGameOver);
+
+        gameOverButtonsBound = true;
+    }
+
+    private void SetupGameOverKeyboardNavigation()
+    {
+        if (gameOverPanel == null)
+            return;
+
+        if (gameOverNavigator == null)
+            gameOverNavigator = gameOverPanel.GetComponent<PanelButtonNavigator>();
+
+        if (gameOverNavigator == null)
+            gameOverNavigator = gameOverPanel.AddComponent<PanelButtonNavigator>();
+
+        if (gameOverMainButton != null && gameOverExitButton != null)
+            gameOverNavigator.buttons = new[] { gameOverMainButton, gameOverExitButton };
+
+        gameOverNavigator.sortButtonsTopToBottom = false;
+        gameOverNavigator.wrapSelection = false;
+        gameOverNavigator.useEventSystemSelection = false;
+        gameOverNavigator.Setup();
     }
 }

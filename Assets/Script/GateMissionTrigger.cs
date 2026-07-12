@@ -20,10 +20,18 @@ public class GateMissionTrigger : MonoBehaviour
 
     [Header("Mission")]
     public MissionStartBanner missionBanner;
+    public bool playMissionClearMessage = true;
+    public bool updateMissionAfterChat = true;
     public string missionClearMessage = "MISI PERTAMA SELESAI";
     public string newMissionMessage = "MISI BARU";
     public string newObjectiveTitle = "Misi Kedua";
     public string newObjectiveDetail = "Cari item untuk membuka gerbang.";
+
+    [Header("Trigger Result")]
+    public GameObject requiredActiveObject;
+    public GameObject objectToActivateAfterTrigger;
+    public GameObject objectToDeactivateAfterTrigger;
+    public bool activateObjectBeforeChat = true;
 
     [Header("Player Detection")]
     public string playerLayerName = "Player";
@@ -62,6 +70,9 @@ public class GateMissionTrigger : MonoBehaviour
         if (!IsPlayer(other))
             return;
 
+        if (requiredActiveObject != null && !requiredActiveObject.activeInHierarchy)
+            return;
+
         hasTriggered = true;
 
         if (currentRoutine != null)
@@ -72,6 +83,9 @@ public class GateMissionTrigger : MonoBehaviour
 
     private IEnumerator TriggerRoutine()
     {
+        if (activateObjectBeforeChat && objectToActivateAfterTrigger != null)
+            objectToActivateAfterTrigger.SetActive(true);
+
         if (missionBanner == null)
             missionBanner = MissionStartBanner.Instance != null
                 ? MissionStartBanner.Instance
@@ -84,9 +98,17 @@ public class GateMissionTrigger : MonoBehaviour
         yield return new WaitForSeconds(chatDuration);
         yield return HideChatBoxRoutine();
 
-        if (missionBanner != null)
+        if (!activateObjectBeforeChat && objectToActivateAfterTrigger != null)
+            objectToActivateAfterTrigger.SetActive(true);
+
+        if (objectToDeactivateAfterTrigger != null)
+            objectToDeactivateAfterTrigger.SetActive(false);
+
+        if (missionBanner != null && updateMissionAfterChat)
         {
-            yield return missionBanner.PlayMessageAndWait(missionClearMessage);
+            if (playMissionClearMessage)
+                yield return missionBanner.PlayMessageAndWait(missionClearMessage);
+
             yield return missionBanner.PlayObjectiveUpdateAndWait(
                 newMissionMessage,
                 newObjectiveTitle,

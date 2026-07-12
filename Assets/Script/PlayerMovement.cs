@@ -75,9 +75,12 @@ public class PlayerMovement : MonoBehaviour
             if (playerAudio != null)
                 playerAudio.StopWalk();
 
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+
             if (anim != null)
             {
-                anim.speed = 0f;
+                anim.speed = 1f;
                 anim.SetFloat("Speed", 0);
             }
             return;
