@@ -1,0 +1,780 @@
+fileFormatVersion: 2
+guid: 2afb63890c4a1c14687f0b5e18ccd75c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2186949889516994801
+    second: Item_EXP_0
+  - first:
+      213: -4591215985838248961
+    second: Item_EXP_1
+  - first:
+      213: 525964659647534316
+    second: Item_EXP_2
+  - first:
+      213: -6690314082810677372
+    second: Item_EXP_3
+  - first:
+      213: 7229507049753516617
+    second: Item_EXP_4
+  - first:
+      213: -2345324967496985180
+    second: Item_EXP_5
+  - first:
+      213: -6795072781200367465
+    second: Item_EXP_6
+  - first:
+      213: -3485790257931811654
+    second: Item_EXP_7
+  - first:
+      213: 8635098669911941972
+    second: Item_EXP_8
+  - first:
+      213: 2636295170855967526
+    second: Item_EXP_9
+  - first:
+      213: 6649657257484909285
+    second: Item_EXP_10
+  - first:
+      213: -2419858833458259157
+    second: Item_EXP_11
+  - first:
+      213: -7241715528724721884
+    second: Item_EXP_12
+  - first:
+      213: 4527768821443006379
+    second: Item_EXP_13
+  - first:
+      213: -2178884936343227396
+    second: Item_EXP_14
+  - first:
+      213: -636197774845239632
+    second: Item_EXP_15
+  - first:
+      213: -4438630524245975899
+    second: Item_EXP_16
+  - first:
+      213: -5990668029791059148
+    second: Item_EXP_17
+  - first:
+      213: 3612513302626714713
+    second: Item_EXP_18
+  - first:
+      213: 1011950654263461412
+    second: Item_EXP_19
+  - first:
+      213: 4479686491753268629
+    second: Item_EXP_20
+  - first:
+      213: -3667792165092975970
+    second: Item_EXP_21
+  - first:
+      213: 1451137151596075429
+    second: Item_EXP_22
+  - first:
+      213: -6020202987717888963
+    second: Item_EXP_23
+  - first:
+      213: -7468075717057160225
+    second: Item_EXP_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Item_EXP_0
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 0
+        width: 1494
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f08d3a665b995e10800000000000000
+      internalID: 2186949889516994801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_1
+      rect:
+        serializedVersion: 2
+        x: 696
+        y: 887
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffb240dd269b840c0800000000000000
+      internalID: -4591215985838248961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_2
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 858
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce453be321a9c4700800000000000000
+      internalID: 525964659647534316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_3
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 751
+        width: 76
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 487b64ad9ca3723a0800000000000000
+      internalID: -6690314082810677372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_4
+      rect:
+        serializedVersion: 2
+        x: 951
+        y: 814
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94a9db1bb5e545460800000000000000
+      internalID: 7229507049753516617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_5
+      rect:
+        serializedVersion: 2
+        x: 613
+        y: 706
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a5dc7d3e5bb37fd0800000000000000
+      internalID: -2345324967496985180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_6
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 663
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79060adae4d03b1a0800000000000000
+      internalID: -6795072781200367465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_7
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 607
+        width: 69
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab4057a9a3cff9fc0800000000000000
+      internalID: -3485790257931811654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_8
+      rect:
+        serializedVersion: 2
+        x: 575
+        y: 621
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 453ac845d7806d770800000000000000
+      internalID: 8635098669911941972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_9
+      rect:
+        serializedVersion: 2
+        x: 614
+        y: 601
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62b92fd7d70069420800000000000000
+      internalID: 2636295170855967526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_10
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 575
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ea7c765b04584c50800000000000000
+      internalID: 6649657257484909285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_11
+      rect:
+        serializedVersion: 2
+        x: 935
+        y: 575
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2b1121463fea6ed0800000000000000
+      internalID: -2419858833458259157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_12
+      rect:
+        serializedVersion: 2
+        x: 991
+        y: 571
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42fcee94812408b90800000000000000
+      internalID: -7241715528724721884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_13
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 543
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: baf033301cdd5de30800000000000000
+      internalID: 4527768821443006379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_14
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 528
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf3ffc2d1bb03c1e0800000000000000
+      internalID: -2178884936343227396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_15
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 511
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0be94779e75cb27f0800000000000000
+      internalID: -636197774845239632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_16
+      rect:
+        serializedVersion: 2
+        x: 946
+        y: 509
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5acdc191e01d662c0800000000000000
+      internalID: -4438630524245975899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_17
+      rect:
+        serializedVersion: 2
+        x: 943
+        y: 479
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 433c305ba2fdcdca0800000000000000
+      internalID: -5990668029791059148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_18
+      rect:
+        serializedVersion: 2
+        x: 584
+        y: 447
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 954407575b9322230800000000000000
+      internalID: 3612513302626714713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_19
+      rect:
+        serializedVersion: 2
+        x: 970
+        y: 439
+        width: 15
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 426099d22cb2b0e00800000000000000
+      internalID: 1011950654263461412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_20
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 424
+        width: 8
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 595c11e312b0b2e30800000000000000
+      internalID: 4479686491753268629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_21
+      rect:
+        serializedVersion: 2
+        x: 599
+        y: 370
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9a1ca96572691dc0800000000000000
+      internalID: -3667792165092975970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_22
+      rect:
+        serializedVersion: 2
+        x: 942
+        y: 356
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a991490d89732410800000000000000
+      internalID: 1451137151596075429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_23
+      rect:
+        serializedVersion: 2
+        x: 606
+        y: 143
+        width: 306
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3474517741f37ca0800000000000000
+      internalID: -6020202987717888963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Item_EXP_24
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 160
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdb5611f3b01c5890800000000000000
+      internalID: -7468075717057160225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Item_EXP_0: 2186949889516994801
+      Item_EXP_1: -4591215985838248961
+      Item_EXP_10: 6649657257484909285
+      Item_EXP_11: -2419858833458259157
+      Item_EXP_12: -7241715528724721884
+      Item_EXP_13: 4527768821443006379
+      Item_EXP_14: -2178884936343227396
+      Item_EXP_15: -636197774845239632
+      Item_EXP_16: -4438630524245975899
+      Item_EXP_17: -5990668029791059148
+      Item_EXP_18: 3612513302626714713
+      Item_EXP_19: 1011950654263461412
+      Item_EXP_2: 525964659647534316
+      Item_EXP_20: 4479686491753268629
+      Item_EXP_21: -3667792165092975970
+      Item_EXP_22: 1451137151596075429
+      Item_EXP_23: -6020202987717888963
+      Item_EXP_24: -7468075717057160225
+      Item_EXP_3: -6690314082810677372
+      Item_EXP_4: 7229507049753516617
+      Item_EXP_5: -2345324967496985180
+      Item_EXP_6: -6795072781200367465
+      Item_EXP_7: -3485790257931811654
+      Item_EXP_8: 8635098669911941972
+      Item_EXP_9: 2636295170855967526
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
