@@ -12,11 +12,13 @@ public float attackCooldown = 1f;
 private float nextAttackTime;
 private Animator anim;
 private PlayerHealth health;
+private PlayerAudio playerAudio;
 
 void Start()
 {
     anim = GetComponent<Animator>();
     health = GetComponent<PlayerHealth>();
+    playerAudio = GetComponent<PlayerAudio>();
 }
 
 void Update()
@@ -32,6 +34,9 @@ void Update()
         Time.time >= nextAttackTime)
     {
         anim.SetTrigger("Attack");
+
+        if (playerAudio != null)
+            playerAudio.PlayAttack();
 
         nextAttackTime =
             Time.time + attackCooldown;

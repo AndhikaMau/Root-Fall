@@ -4,9 +4,16 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
+    public float acceleration = 45f;
+    public float deceleration = 55f;
     public float jumpForce = 10f;
+    public float coyoteTime = 0.1f;
+    public float jumpBufferTime = 0.12f;
+    public float jumpCutMultiplier = 0.5f;
     public float dashSpeed = 15f;
     public float dashDuration = 0.2f;
+    public float dashCooldown = 0.35f;
+    public float wallCheckDistance = 0.05f;
 
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
@@ -16,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private bool menuActive = false;
 
     private Rigidbody2D rb;
+    private Collider2D bodyCollider;
     private Animator anim;
     private PlayerHealth health;
     private PlayerAudio playerAudio;
@@ -25,13 +33,21 @@ public class PlayerMovement : MonoBehaviour
     private bool isDashing = false;
     private bool facingRight = true;
     private bool wasMovementLocked;
+    private float moveInput;
+    private float coyoteCounter;
+    private float jumpBufferCounter;
+    private float dashCooldownCounter;
+    private readonly RaycastHit2D[] wallHits = new RaycastHit2D[4];
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        bodyCollider = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
         health = GetComponent<PlayerHealth>();
         playerAudio = GetComponent<PlayerAudio>();
+
+        ApplyFrictionlessMaterial();
     }
 
     public void SetMenuActive(bool active)
@@ -52,11 +68,7 @@ public class PlayerMovement : MonoBehaviour
         bool isMainMenuScene = SceneManager.GetActiveScene().name == "MainMenu";
         bool shouldLockMovement = !canMove || isMainMenuScene || menuActive;
 
-        // Ground Check tetap berjalan
-        isGrounded = Physics2D.OverlapCircle(
-            groundCheck.position,
-            groundCheckRadius,
-            groundLayer);
+        UpdateGroundedState();
 
         if (health != null && health.IsDead)
         {
@@ -102,7 +114,8 @@ public class PlayerMovement : MonoBehaviour
         if (anim != null)
             anim.speed = 1f;
 
-        anim.SetBool("IsGrounded", isGrounded);
+        if (anim != null)
+            anim.SetBool("IsGrounded", isGrounded);
 
         if (isDashing)
         {
@@ -121,52 +134,34 @@ public class PlayerMovement : MonoBehaviour
 
         wasGrounded = isGrounded;
 
-        float move = 0;
+        ReadMoveInput();
+        UpdateJumpTimers();
+        ApplyHorizontalMovement();
 
-        if (Input.GetKey(KeyCode.A))
-            move = -1;
-
-        if (Input.GetKey(KeyCode.D))
-            move = 1;
-
-        rb.linearVelocity =
-            new Vector2(
-                move * speed,
-                rb.linearVelocity.y);
-
-        anim.SetFloat("Speed", Mathf.Abs(move));
+        if (anim != null)
+            anim.SetFloat("Speed", Mathf.Abs(moveInput));
 
         if (playerAudio != null)
         {
-            if (move != 0 && isGrounded)
+            if (moveInput != 0 && isGrounded && Mathf.Abs(rb.linearVelocity.x) > 0.05f)
                 playerAudio.PlayWalk();
             else
                 playerAudio.StopWalk();
         }
 
-        if (move > 0 && !facingRight)
+        if (moveInput > 0 && !facingRight)
             Flip();
 
-        if (move < 0 && facingRight)
+        if (moveInput < 0 && facingRight)
             Flip();
 
-        // Jump
-        if (Input.GetKeyDown(KeyCode.W) && isGrounded)
-        {
-            if (playerAudio != null)
-                playerAudio.StopWalk();
-
-            rb.linearVelocity =
-                new Vector2(
-                    rb.linearVelocity.x,
-                    jumpForce);
-
-            if (playerAudio != null)
-                playerAudio.PlayJump();
-        }
+        TryJump();
+        CutJumpWhenReleased();
 
         // Dash
-        if (Input.GetKeyDown(KeyCode.K))
+        dashCooldownCounter -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.K) && dashCooldownCounter <= 0f)
         {
             if (playerAudio != null)
             {
@@ -181,6 +176,7 @@ public class PlayerMovement : MonoBehaviour
     private System.Collections.IEnumerator Dash()
     {
         isDashing = true;
+        dashCooldownCounter = dashCooldown;
 
         float direction = facingRight ? 1f : -1f;
 
@@ -189,6 +185,9 @@ public class PlayerMovement : MonoBehaviour
 
         while (elapsed < dashDuration)
         {
+            if (IsBlockedHorizontally(direction))
+                break;
+
             rb.linearVelocity =
                 new Vector2(
                     direction * currentSpeed,
@@ -205,6 +204,117 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isDashing = false;
+        rb.linearVelocity = new Vector2(Mathf.Clamp(rb.linearVelocity.x, -speed, speed), rb.linearVelocity.y);
+    }
+
+    private void UpdateGroundedState()
+    {
+        if (groundCheck == null)
+        {
+            isGrounded = false;
+            return;
+        }
+
+        isGrounded = Physics2D.OverlapCircle(
+            groundCheck.position,
+            groundCheckRadius,
+            groundLayer);
+    }
+
+    private void ReadMoveInput()
+    {
+        moveInput = 0f;
+
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            moveInput = -1f;
+
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            moveInput = 1f;
+    }
+
+    private void ApplyHorizontalMovement()
+    {
+        float targetVelocityX = moveInput * speed;
+
+        if (moveInput != 0f && IsBlockedHorizontally(moveInput))
+            targetVelocityX = 0f;
+
+        float rate = Mathf.Abs(targetVelocityX) > 0f ? acceleration : deceleration;
+        float velocityX = Mathf.MoveTowards(rb.linearVelocity.x, targetVelocityX, rate * Time.deltaTime);
+
+        rb.linearVelocity = new Vector2(velocityX, rb.linearVelocity.y);
+    }
+
+    private void UpdateJumpTimers()
+    {
+        if (isGrounded)
+            coyoteCounter = coyoteTime;
+        else
+            coyoteCounter -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Space))
+            jumpBufferCounter = jumpBufferTime;
+        else
+            jumpBufferCounter -= Time.deltaTime;
+    }
+
+    private void TryJump()
+    {
+        if (jumpBufferCounter <= 0f || coyoteCounter <= 0f)
+            return;
+
+        if (playerAudio != null)
+            playerAudio.StopWalk();
+
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        jumpBufferCounter = 0f;
+        coyoteCounter = 0f;
+
+        if (playerAudio != null)
+            playerAudio.PlayJump();
+    }
+
+    private void CutJumpWhenReleased()
+    {
+        bool releasedJump = Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.Space);
+
+        if (releasedJump && rb.linearVelocity.y > 0f)
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+    }
+
+    private bool IsBlockedHorizontally(float direction)
+    {
+        if (bodyCollider == null || Mathf.Approximately(direction, 0f))
+            return false;
+
+        int hitCount = bodyCollider.Cast(new Vector2(Mathf.Sign(direction), 0f), wallHits, wallCheckDistance);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit2D hit = wallHits[i];
+
+            if (hit.collider == null || hit.collider.isTrigger)
+                continue;
+
+            if (hit.normal.x * Mathf.Sign(direction) < -0.5f)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ApplyFrictionlessMaterial()
+    {
+        if (bodyCollider == null || bodyCollider.sharedMaterial != null)
+            return;
+
+        PhysicsMaterial2D material = new PhysicsMaterial2D("Player_Runtime_NoFriction")
+        {
+            friction = 0f,
+            bounciness = 0f
+        };
+
+        bodyCollider.sharedMaterial = material;
     }
 
     void Flip()

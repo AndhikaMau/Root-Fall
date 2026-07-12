@@ -19,9 +19,13 @@ public class NPCManager : MonoBehaviour
     [Tooltip("Prefab yang PASTI muncul, satu kali per elemen. Boleh kosong.")]
     public GameObject[] alwaysSpawn;
 
-    [Header("Area Spawn Random (dunia)")]
+    [Header("Area Spawn NPC Biasa - Kiri (dunia)")]
     public float minX = -10f;
     public float maxX = 10f;
+
+    [Header("Area Spawn Tetua / Always Spawn - Kanan (dunia)")]
+    public float alwaysSpawnMinX = 18f;
+    public float alwaysSpawnMaxX = 58f;
 
     [Tooltip("Acak posisi Y juga? Jika tidak, semua muncul di spawnY.")]
     public bool randomizeY = false;
@@ -36,14 +40,16 @@ public class NPCManager : MonoBehaviour
     [Tooltip("Parent untuk NPC hasil spawn (opsional, biar Hierarchy rapi).")]
     public Transform spawnParent;
 
-    private readonly List<float> usedX = new List<float>();
+    private readonly List<float> usedNpcX = new List<float>();
+    private readonly List<float> usedAlwaysX = new List<float>();
     private readonly List<GameObject> spawned = new List<GameObject>();
 
     // Dipanggil saat menekan tombol Start
     public void SpawnNPCs()
     {
         ClearSpawned();
-        usedX.Clear();
+        usedNpcX.Clear();
+        usedAlwaysX.Clear();
 
         // 1) Yang pasti muncul (mis. Tetua)
         if (alwaysSpawn != null)
@@ -51,7 +57,7 @@ public class NPCManager : MonoBehaviour
             foreach (GameObject prefab in alwaysSpawn)
             {
                 if (prefab != null)
-                    SpawnOne(prefab);
+                    SpawnOne(prefab, alwaysSpawnMinX, alwaysSpawnMaxX, usedAlwaysX);
             }
         }
 
@@ -62,15 +68,15 @@ public class NPCManager : MonoBehaviour
             {
                 GameObject prefab = npcPrefabs[Random.Range(0, npcPrefabs.Length)];
                 if (prefab != null)
-                    SpawnOne(prefab);
+                    SpawnOne(prefab, minX, maxX, usedNpcX);
             }
         }
     }
 
-    void SpawnOne(GameObject prefab)
+    void SpawnOne(GameObject prefab, float areaMinX, float areaMaxX, List<float> used)
     {
-        Vector3 pos = GetRandomPosition(usedX);
-        usedX.Add(pos.x);
+        Vector3 pos = GetRandomPosition(areaMinX, areaMaxX, used);
+        used.Add(pos.x);
 
         GameObject npc = Instantiate(prefab, pos, Quaternion.identity, spawnParent);
         npc.SetActive(true);
@@ -87,9 +93,11 @@ public class NPCManager : MonoBehaviour
         spawned.Clear();
     }
 
-    Vector3 GetRandomPosition(List<float> used)
+    Vector3 GetRandomPosition(float areaMinX, float areaMaxX, List<float> used)
     {
-        float x = Random.Range(minX, maxX);
+        float min = Mathf.Min(areaMinX, areaMaxX);
+        float max = Mathf.Max(areaMinX, areaMaxX);
+        float x = Random.Range(min, max);
 
         // Coba cari X yang tidak terlalu dekat dengan NPC lain
         if (minSpacing > 0f)
@@ -110,7 +118,7 @@ public class NPCManager : MonoBehaviour
                 if (!tooClose)
                     break;
 
-                x = Random.Range(minX, maxX);
+                x = Random.Range(min, max);
             }
         }
 
@@ -129,5 +137,12 @@ public class NPCManager : MonoBehaviour
         Gizmos.DrawLine(l, r);
         Gizmos.DrawWireSphere(l, 0.2f);
         Gizmos.DrawWireSphere(r, 0.2f);
+
+        Gizmos.color = Color.cyan;
+        Vector3 alwaysL = new Vector3(alwaysSpawnMinX, y + 0.25f, 0f);
+        Vector3 alwaysR = new Vector3(alwaysSpawnMaxX, y + 0.25f, 0f);
+        Gizmos.DrawLine(alwaysL, alwaysR);
+        Gizmos.DrawWireSphere(alwaysL, 0.2f);
+        Gizmos.DrawWireSphere(alwaysR, 0.2f);
     }
 }

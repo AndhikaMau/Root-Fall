@@ -6,6 +6,12 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 3;
     public float invincibleTime = 1f;
 
+    [Header("Checkpoint")]
+    public string checkpointLayerName = "Checkpoint";
+    public Vector2 checkpointRespawnOffset = new Vector2(0f, 0.35f);
+    public bool respawnAtCheckpointOnDeath = true;
+    public float respawnDelay = 1f;
+
     // UI Hati
     public HealthUI healthUI;
 
@@ -16,8 +22,12 @@ public class PlayerHealth : MonoBehaviour
     private Animator anim;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    private PlayerAudio playerAudio;
 
     private bool isInvincible;
+    private Vector3 checkpointPosition;
+    private bool hasCheckpoint;
+    private int checkpointLayer = -1;
 
     public bool IsDead { get; private set; }
 
@@ -28,6 +38,10 @@ public class PlayerHealth : MonoBehaviour
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        playerAudio = GetComponent<PlayerAudio>();
+        checkpointLayer = LayerMask.NameToLayer(checkpointLayerName);
+        checkpointPosition = transform.position;
+        hasCheckpoint = true;
 
         if (healthUI != null)
         {
@@ -38,6 +52,34 @@ public class PlayerHealth : MonoBehaviour
         {
             gameOverPanel.SetActive(false);
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        TrySetCheckpoint(other);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        TrySetCheckpoint(collision.collider);
+    }
+
+    private void TrySetCheckpoint(Collider2D other)
+    {
+        if (other == null || checkpointLayer < 0)
+            return;
+
+        if (other.gameObject.layer != checkpointLayer)
+            return;
+
+        SetCheckpoint(other.transform.position + (Vector3)checkpointRespawnOffset);
+    }
+
+    public void SetCheckpoint(Vector3 position)
+    {
+        checkpointPosition = position;
+        hasCheckpoint = true;
+        Debug.Log("Checkpoint tersimpan: " + checkpointPosition);
     }
 
     public void TakeDamage(int damage)
@@ -58,6 +100,9 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth > 0)
         {
+            if (playerAudio != null)
+                playerAudio.PlayHurt();
+
             anim.SetTrigger("Hurt");
             StartCoroutine(Invincibility());
         }
@@ -97,6 +142,11 @@ public class PlayerHealth : MonoBehaviour
 
         if (gameOverPanel != null)
         {
+            PanelButtonNavigator navigator = gameOverPanel.GetComponent<PanelButtonNavigator>();
+            if (navigator == null)
+                navigator = gameOverPanel.AddComponent<PanelButtonNavigator>();
+
+            navigator.Setup();
             gameOverPanel.SetActive(true);
         }
 
@@ -109,6 +159,12 @@ public class PlayerHealth : MonoBehaviour
             return;
 
         IsDead = true;
+
+        if (playerAudio != null)
+        {
+            playerAudio.StopWalk();
+            playerAudio.PlayDeath();
+        }
 
         rb.linearVelocity =
             new Vector2(0f, rb.linearVelocity.y);
@@ -123,8 +179,45 @@ public class PlayerHealth : MonoBehaviour
         // Paksa langsung masuk animasi mati
         anim.Play("playerdeath", 0, 0f);
 
-        StartCoroutine(ShowGameOver());
+        if (respawnAtCheckpointOnDeath && hasCheckpoint)
+            StartCoroutine(RespawnAtCheckpointAfterDelay());
+        else
+            StartCoroutine(ShowGameOver());
 
         Debug.Log("Player Mati");
+    }
+
+    private IEnumerator RespawnAtCheckpointAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        transform.position = checkpointPosition;
+
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        currentHealth = maxHealth;
+        IsDead = false;
+        isInvincible = false;
+
+        if (healthUI != null)
+            healthUI.UpdateHearts(currentHealth);
+
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(false);
+
+        if (sr != null)
+            sr.color = Color.white;
+
+        if (anim != null)
+        {
+            anim.speed = 1f;
+            anim.ResetTrigger("Hurt");
+            anim.SetFloat("Speed", 0f);
+            anim.SetBool("IsGrounded", true);
+            anim.Play("idle", 0, 0f);
+        }
+
+        StartCoroutine(Invincibility());
     }
 }

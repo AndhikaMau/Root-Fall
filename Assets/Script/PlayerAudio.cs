@@ -14,6 +14,7 @@ public class PlayerAudio : MonoBehaviour
     public AudioClip death;
     public AudioClip dash;
     public AudioClip pickup;
+    public AudioClip drop;
 
     private void Awake()
     {
@@ -25,6 +26,29 @@ public class PlayerAudio : MonoBehaviour
 
         if (sfxAudioSource == null)
             sfxAudioSource = CreateSfxAudioSource();
+
+        AssignFallbackClips();
+    }
+
+    private void AssignFallbackClips()
+    {
+        if (dash == null)
+            dash = jump;
+
+        if (attack == null)
+            attack = land;
+
+        if (hurt == null)
+            hurt = land;
+
+        if (death == null)
+            death = hurt != null ? hurt : land;
+
+        if (pickup == null)
+            pickup = jump;
+
+        if (drop == null)
+            drop = pickup;
     }
 
     private void PlayClip(AudioClip clip)
@@ -112,5 +136,10 @@ public class PlayerAudio : MonoBehaviour
     public void PlayPickup()
     {
         PlayClip(pickup);
+    }
+
+    public void PlayDrop()
+    {
+        PlayClip(drop);
     }
 }

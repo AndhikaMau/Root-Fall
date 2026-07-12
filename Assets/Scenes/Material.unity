@@ -1396,6 +1396,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PauseManager
   pausePanel: {fileID: 91918256}
   settingsPanel: {fileID: 1962682875}
+  titleText: {fileID: 0}
+  titleMessage: GAME PAUSED
+  resumeButton: {fileID: 0}
+  exitButton: {fileID: 0}
+  resumeButtonSprite: {fileID: 3884117682838646531, guid: 91acfcf8e07cd744bb2fcaec1f12e46e, type: 3}
+  exitButtonSprite: {fileID: -5349746231871926511, guid: ce0e76237d9abb745912e5e3242ae4b0, type: 3}
+  pauseButtons: []
+  normalTextColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedTextColor: {r: 1, g: 0.82, b: 0.32, a: 1}
+  selectedButtonScaleMultiplier: {x: 1.08, y: 1.08, z: 1}
 --- !u!1 &400059460
 GameObject:
   m_ObjectHideFlags: 0

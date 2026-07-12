@@ -11,9 +11,12 @@ public class PlayerCarry : MonoBehaviour
 
     private CarryableItem nearbyItem;
     private CarryableItem heldItem;
+    private PlayerAudio playerAudio;
 
     void Start()
     {
+        playerAudio = GetComponent<PlayerAudio>();
+
         if (heldItemIcon != null)
             heldItemIcon.gameObject.SetActive(false);
 
@@ -78,6 +81,9 @@ public class PlayerCarry : MonoBehaviour
 
         nearbyItem = null;
 
+        if (playerAudio != null)
+            playerAudio.PlayPickup();
+
         Debug.Log("Mengambil item");
     }
 
@@ -94,6 +100,9 @@ public class PlayerCarry : MonoBehaviour
         // Sembunyikan nama
         if (heldItemName != null)
             heldItemName.gameObject.SetActive(false);
+
+        if (playerAudio != null)
+            playerAudio.PlayPickup();
 
         Debug.Log("Menjatuhkan item");
 
