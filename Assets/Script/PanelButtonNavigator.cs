@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 public class PanelButtonNavigator : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class PanelButtonNavigator : MonoBehaviour
     public Color normalGraphicColor = Color.white;
     public Color selectedGraphicColor = new Color(1f, 0.92f, 0.58f, 1f);
     public Vector3 selectedScaleMultiplier = new Vector3(1.08f, 1.08f, 1f);
+    public bool sortButtonsTopToBottom = true;
+    public bool wrapSelection = true;
+    public bool useEventSystemSelection;
 
     private int selectedIndex;
     private Text[] buttonTexts;
@@ -35,7 +39,8 @@ public class PanelButtonNavigator : MonoBehaviour
         if (buttons == null || buttons.Length == 0)
             return;
 
-        SyncSelectionFromEventSystem();
+        if (useEventSystemSelection)
+            SyncSelectionFromEventSystem();
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow) ||
             Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
@@ -52,6 +57,8 @@ public class PanelButtonNavigator : MonoBehaviour
         if (buttons == null || buttons.Length == 0)
             buttons = GetComponentsInChildren<Button>(true);
 
+        SortButtonsByScreenPosition();
+
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
@@ -60,7 +67,38 @@ public class PanelButtonNavigator : MonoBehaviour
         canvasGroup.blocksRaycasts = true;
 
         CacheButtonVisuals();
+        DisableBuiltInButtonNavigation();
         DisableMouseRaycasts();
+
+        if (!useEventSystemSelection && EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    private void SortButtonsByScreenPosition()
+    {
+        if (!sortButtonsTopToBottom || buttons == null || buttons.Length <= 1)
+            return;
+
+        Array.Sort(buttons, (left, right) =>
+        {
+            if (left == null && right == null)
+                return 0;
+
+            if (left == null)
+                return 1;
+
+            if (right == null)
+                return -1;
+
+            Vector3 leftPosition = left.transform.position;
+            Vector3 rightPosition = right.transform.position;
+
+            int verticalCompare = rightPosition.y.CompareTo(leftPosition.y);
+            if (verticalCompare != 0)
+                return verticalCompare;
+
+            return leftPosition.x.CompareTo(rightPosition.x);
+        });
     }
 
     private void DisableMouseRaycasts()
@@ -68,6 +106,19 @@ public class PanelButtonNavigator : MonoBehaviour
         Graphic[] graphics = GetComponentsInChildren<Graphic>(true);
         for (int i = 0; i < graphics.Length; i++)
             graphics[i].raycastTarget = false;
+    }
+
+    private void DisableBuiltInButtonNavigation()
+    {
+        if (buttons == null)
+            return;
+
+        Navigation noNavigation = new Navigation { mode = Navigation.Mode.None };
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (buttons[i] != null)
+                buttons[i].navigation = noNavigation;
+        }
     }
 
     private void CacheButtonVisuals()
@@ -140,7 +191,13 @@ public class PanelButtonNavigator : MonoBehaviour
 
         for (int i = 0; i < buttons.Length; i++)
         {
-            nextIndex = (nextIndex + direction + buttons.Length) % buttons.Length;
+            nextIndex += direction;
+
+            if (wrapSelection)
+                nextIndex = (nextIndex + buttons.Length) % buttons.Length;
+            else if (nextIndex < 0 || nextIndex >= buttons.Length)
+                return;
+
             if (IsButtonSelectable(buttons[nextIndex]))
             {
                 selectedIndex = nextIndex;
@@ -182,7 +239,8 @@ public class PanelButtonNavigator : MonoBehaviour
                 buttonGraphics[i].color = selected ? selectedGraphicColor : normalGraphicColor;
         }
 
-        SelectCurrentButtonInEventSystem();
+        if (useEventSystemSelection)
+            SelectCurrentButtonInEventSystem();
     }
 
     private void SyncSelectionFromEventSystem()

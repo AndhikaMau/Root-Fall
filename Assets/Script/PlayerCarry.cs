@@ -13,6 +13,19 @@ public class PlayerCarry : MonoBehaviour
     private CarryableItem heldItem;
     private PlayerAudio playerAudio;
 
+    public bool IsHoldingItem(string itemName)
+    {
+        if (heldItem == null)
+            return false;
+
+        if (string.IsNullOrWhiteSpace(itemName))
+            return true;
+
+        return string.Equals(heldItem.itemName, itemName, System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    public CarryableItem HeldItem => heldItem;
+
     void Start()
     {
         playerAudio = GetComponent<PlayerAudio>();

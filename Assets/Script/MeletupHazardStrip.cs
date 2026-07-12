@@ -1,5 +1,9 @@
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [ExecuteAlways]
 public class MeletupHazardStrip : MonoBehaviour
 {
@@ -34,17 +38,51 @@ public class MeletupHazardStrip : MonoBehaviour
     public Vector2 colliderSize = new Vector2(1f, 1.35f);
 
     private const string GeneratedPrefix = "MeletupVent_";
+    private bool rebuildQueued;
+
     private void OnEnable()
     {
-        RebuildStrip();
+        QueueRebuild();
     }
 
     private void OnValidate()
     {
         hazardCount = Mathf.Max(1, hazardCount);
         spacing = Mathf.Max(0.5f, spacing);
+        QueueRebuild();
+    }
+
+    private void QueueRebuild()
+    {
+        if (!isActiveAndEnabled)
+            return;
+
+        if (Application.isPlaying)
+        {
+            RebuildStrip();
+            return;
+        }
+
+#if UNITY_EDITOR
+        if (rebuildQueued)
+            return;
+
+        rebuildQueued = true;
+        EditorApplication.delayCall += DelayedEditorRebuild;
+#endif
+    }
+
+#if UNITY_EDITOR
+    private void DelayedEditorRebuild()
+    {
+        rebuildQueued = false;
+
+        if (this == null || !isActiveAndEnabled)
+            return;
+
         RebuildStrip();
     }
+#endif
 
     [ContextMenu("Rebuild Meletup Hazard Strip")]
     public void RebuildStrip()
@@ -74,7 +112,7 @@ public class MeletupHazardStrip : MonoBehaviour
             warning = CreateVisual("Warning", hazard.transform, warningSprite, flameOffset, flameScale, 6);
 
         GameObject active = CreateVisual("Active", hazard.transform, activeSprite, flameOffset, flameScale, 7);
-        if (activeAnimatorController != null)
+        if (Application.isPlaying && activeAnimatorController != null)
         {
             Animator animator = active.AddComponent<Animator>();
             animator.runtimeAnimatorController = activeAnimatorController;
